@@ -1,0 +1,114 @@
+swagger: '2.0'
+info:
+  title: Local Events API
+  version: "0.1"
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /events:
+    get:
+      tags: [Events]
+      operationId: app.get_events
+      summary: Get all events
+      parameters:
+        - name: name
+          in: query
+          type: string
+        - name: venue
+          in: query
+          type: string
+      responses:
+        200:
+          description: Return events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+  /events/{event_id}:
+    get:
+      tags: [Events]
+      operationId: app.get_event
+      summary: Get a single event
+      parameters:
+        - $ref: '#/parameters/event_id'
+      responses:
+        200:
+          description: Return event
+          schema:
+            $ref: '#/definitions/Event'
+        404:
+          description: Event does not exist
+    put:
+      tags: [Events]
+      operationId: app.put_event
+      summary: Create or update an event
+      parameters:
+        - $ref: '#/parameters/event_id'
+        - name: event
+          in: body
+          schema:
+            $ref: '#/definitions/Event'
+      responses:
+        200:
+          description: Event updated
+        201:
+          description: New event created
+    delete:
+      tags: [Events]
+      operationId: app.delete_event
+      summary: Remove an event
+      parameters:
+        - $ref: '#/parameters/event_id'
+      responses:
+        204:
+          description: Event was deleted
+        404:
+          description: Event does not exist
+
+
+parameters:
+  event_id:
+    name: event_id
+    description: Event's Unique identifier
+    in: path
+    type: string
+    required: true
+    pattern: "^[a-zA-Z0-9-]+$"
+
+definitions:
+  Event:
+    type: object
+    required:
+      - name
+      - venue
+      - time
+    properties:
+      id:
+        type: string
+        description: Unique identifier
+        example: "123"
+        readOnly: true
+      name:
+        type: string
+        description: Event's name
+        example: "Concert on the Waterfront"
+        minLength: 1
+        maxLength: 100
+      venue:
+        type: string
+        description: Event's venue
+        example: "Roy Thomson Hall"
+        minLength: 1
+      time:
+        type: string
+        format: date-time
+        description: Event time
+        example: "2015-07-07T15:49:51.230+02:00"
+      created_time:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
